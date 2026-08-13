@@ -6,12 +6,13 @@ const navigation = [
   { label: 'RESEARCH', href: '/research', path: '/research' },
   {
     label: 'PEOPLE',
-    href: '/people',
-    path: '/people',
+    href: '/people/current-members',
+    path: '/people/current-members',
+    activePrefix: '/people/',
     children: [
-      { label: 'Professor', href: '/people#professor' },
-      { label: 'Current Members', href: '/people#current-members' },
-      { label: 'Alumni', href: '/people#alumni' },
+      { label: 'Professor', href: '/people/professor', path: '/people/professor' },
+      { label: 'Current Members', href: '/people/current-members', path: '/people/current-members' },
+      { label: 'Alumni', href: '/people/alumni', path: '/people/alumni' },
     ],
   },
   { label: 'PUBLICATIONS', href: '/publications', path: '/publications' },
@@ -23,18 +24,6 @@ const navigation = [
 function Header({ currentPath, onNavigate }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const closeMenu = () => setMenuOpen(false)
-  const navigateToSection = (event, href) => {
-    event.preventDefault()
-    closeMenu()
-
-    const [path, hash] = href.split('#')
-    onNavigate(path)
-    window.history.replaceState({}, '', href)
-
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView())
-    })
-  }
 
   return (
     <header className="site-header">
@@ -55,7 +44,7 @@ function Header({ currentPath, onNavigate }) {
           {navigation.map((item) => (
             <div className={`navigation-item${item.children ? ' has-submenu' : ''}`} key={item.label}>
               <a
-                className={item.path === currentPath ? 'is-active' : ''}
+                className={item.path === currentPath || item.activePrefix && currentPath.startsWith(item.activePrefix) ? 'is-active' : ''}
                 href={item.href}
                 onClick={(event) => {
                   closeMenu()
@@ -70,7 +59,7 @@ function Header({ currentPath, onNavigate }) {
               {item.children && (
                 <div className="navigation-submenu" aria-label="People sections">
                   {item.children.map((child) => (
-                    <a href={child.href} key={child.label} onClick={(event) => navigateToSection(event, child.href)}>{child.label}</a>
+                    <a href={child.href} key={child.label} onClick={(event) => { event.preventDefault(); closeMenu(); onNavigate(child.path) }}>{child.label}</a>
                   ))}
                 </div>
               )}

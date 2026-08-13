@@ -4,7 +4,9 @@ import Header from './components/Header.jsx'
 import Contact from './pages/Contact.jsx'
 import Home from './pages/Home.jsx'
 import News from './pages/News.jsx'
-import People from './pages/People.jsx'
+import Alumni from './pages/Alumni.jsx'
+import CurrentMembers from './pages/CurrentMembers.jsx'
+import Professor from './pages/Professor.jsx'
 import Publications from './pages/Publications.jsx'
 import Research from './pages/Research.jsx'
 import Resources from './pages/Resources.jsx'
@@ -18,6 +20,13 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
+  useEffect(() => {
+    if (path === '/people') {
+      window.history.replaceState({}, '', '/people/current-members')
+      setPath('/people/current-members')
+    }
+  }, [path])
+
   const navigate = (nextPath) => {
     if (window.location.pathname !== nextPath) {
       window.history.pushState({}, '', nextPath)
@@ -26,13 +35,15 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'auto' })
   }
 
-  const availablePaths = ['/', '/research', '/people', '/publications', '/resources', '/news', '/contact']
-  const currentPath = availablePaths.includes(path) ? path : '/'
+  const availablePaths = ['/', '/research', '/people/professor', '/people/current-members', '/people/alumni', '/publications', '/resources', '/news', '/contact']
+  const currentPath = path === '/people' ? '/people/current-members' : availablePaths.includes(path) ? path : '/'
 
   const pages = {
     '/': <Home />,
     '/research': <Research />,
-    '/people': <People />,
+    '/people/professor': <Professor />,
+    '/people/current-members': <CurrentMembers />,
+    '/people/alumni': <Alumni />,
     '/publications': <Publications />,
     '/resources': <Resources />,
     '/news': <News />,
