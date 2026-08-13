@@ -2,23 +2,44 @@ import { useState } from 'react'
 import cnuSymbol from '../assets/CNU_symbol.png'
 
 const navigation = [
-  { label: 'HOME', href: '#top' },
-  { label: 'RESEARCH', href: '#research' },
-  { label: 'PEOPLE', href: '#people' },
-  { label: 'PUBLICATIONS', href: '#publications' },
-  { label: 'RESOURCES', href: '#resources' },
-  { label: 'NEWS', href: '#news' },
-  { label: 'CONTACT', href: '#contact' },
+  { label: 'HOME', href: '/', path: '/' },
+  { label: 'RESEARCH', href: '/research', path: '/research' },
+  {
+    label: 'PEOPLE',
+    href: '/people',
+    path: '/people',
+    children: [
+      { label: 'Professor', href: '/people#professor' },
+      { label: 'Current Members', href: '/people#current-members' },
+      { label: 'Alumni', href: '/people#alumni' },
+    ],
+  },
+  { label: 'PUBLICATIONS', href: '/publications', path: '/publications' },
+  { label: 'RESOURCES', href: '/resources', path: '/resources' },
+  { label: 'NEWS', href: '/news', path: '/news' },
+  { label: 'CONTACT', href: '/contact', path: '/contact' },
 ]
 
-function Header() {
+function Header({ currentPath, onNavigate }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const closeMenu = () => setMenuOpen(false)
+  const navigateToSection = (event, href) => {
+    event.preventDefault()
+    closeMenu()
+
+    const [path, hash] = href.split('#')
+    onNavigate(path)
+    window.history.replaceState({}, '', href)
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView())
+    })
+  }
 
   return (
     <header className="site-header">
       <div className="header-inner">
-        <a className="site-brand" href="#top" onClick={closeMenu}>
+        <a className="site-brand" href="/" onClick={(event) => { event.preventDefault(); closeMenu(); onNavigate('/') }}>
           <img className="university-logo" src={cnuSymbol} alt="Chonnam National University symbol" />
           <span className="brand-copy">
             <strong>Food Processing Laboratory</strong>
@@ -31,7 +52,30 @@ function Header() {
           <span className="menu-line" aria-hidden="true" />
         </button>
         <nav id="primary-navigation" className={`primary-navigation${menuOpen ? ' is-open' : ''}`} aria-label="Primary navigation">
-          {navigation.map((item) => <a key={item.label} className={item.label === 'HOME' ? 'is-active' : ''} href={item.href} onClick={closeMenu}>{item.label}</a>)}
+          {navigation.map((item) => (
+            <div className={`navigation-item${item.children ? ' has-submenu' : ''}`} key={item.label}>
+              <a
+                className={item.path === currentPath ? 'is-active' : ''}
+                href={item.href}
+                onClick={(event) => {
+                  closeMenu()
+                  if (item.path) {
+                    event.preventDefault()
+                    onNavigate(item.path)
+                  }
+                }}
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <div className="navigation-submenu" aria-label="People sections">
+                  {item.children.map((child) => (
+                    <a href={child.href} key={child.label} onClick={(event) => navigateToSection(event, child.href)}>{child.label}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </nav>
       </div>
     </header>
