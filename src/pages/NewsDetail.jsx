@@ -24,6 +24,18 @@ function NewsDetail({ item, onNavigate }) {
         </div>
         {item.image && <img className="news-article-image" src={item.image} alt="" />}
         {item.body && <div className="news-article-body"><MarkdownContent source={item.body} /></div>}
+        {item.gallery.length > 0 && (
+          <section className="news-gallery-section" aria-labelledby="news-gallery-title">
+            <h2 id="news-gallery-title">Gallery</h2>
+            <div className="news-gallery">
+              {item.gallery.map((image, index) => (
+                <a href={image} target="_blank" rel="noopener noreferrer" key={`${image}-${index}`}>
+                  <img src={image} alt={`News gallery image ${index + 1}`} />
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
       </article>
     </main>
   )

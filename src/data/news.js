@@ -13,6 +13,7 @@ function parseScalar(value) {
   if (trimmed === 'true') return true
   if (trimmed === 'false') return false
   if (trimmed === 'null' || trimmed === '~') return null
+  if (trimmed === '[]') return []
 
   if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
     try {
@@ -29,6 +30,38 @@ function parseScalar(value) {
   return trimmed
 }
 
+function parseFrontMatter(source, filePath) {
+  const metadata = {}
+  const lines = source.split('\n')
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]
+    if (!line.trim() || line.trimStart().startsWith('#')) continue
+
+    const separator = line.indexOf(':')
+    if (separator < 1 || /^\s/.test(line)) {
+      throw new Error(`[News] Invalid front matter in ${filePath} at line ${index + 2}.`)
+    }
+
+    const key = line.slice(0, separator).trim()
+    const rawValue = line.slice(separator + 1)
+
+    if (rawValue.trim()) {
+      metadata[key] = parseScalar(rawValue)
+      continue
+    }
+
+    const values = []
+    while (index + 1 < lines.length && /^\s+-\s+/.test(lines[index + 1])) {
+      index += 1
+      values.push(parseScalar(lines[index].replace(/^\s+-\s+/, '')))
+    }
+    metadata[key] = values
+  }
+
+  return metadata
+}
+
 function parseNewsFile(source, filePath) {
   const normalizedSource = source.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n')
   const match = normalizedSource.match(/^---\n([\s\S]*?)\n---(?:\n|$)([\s\S]*)$/)
@@ -37,18 +70,7 @@ function parseNewsFile(source, filePath) {
     throw new Error(`[News] ${filePath} must begin with YAML front matter enclosed by --- lines.`)
   }
 
-  const metadata = {}
-
-  match[1].split('\n').forEach((line, index) => {
-    if (!line.trim() || line.trimStart().startsWith('#')) return
-
-    const separator = line.indexOf(':')
-    if (separator < 1) {
-      throw new Error(`[News] Invalid front matter in ${filePath} at line ${index + 2}.`)
-    }
-
-    metadata[line.slice(0, separator).trim()] = parseScalar(line.slice(separator + 1))
-  })
+  const metadata = parseFrontMatter(match[1], filePath)
 
   const missingFields = requiredFields.filter((field) => typeof metadata[field] !== 'string' || !metadata[field].trim())
   if (missingFields.length > 0) {
@@ -69,6 +91,9 @@ function parseNewsFile(source, filePath) {
     category: metadata.category,
     summary: metadata.summary,
     image: metadata.image ? resolveSiteAsset(metadata.image) : '',
+    gallery: Array.isArray(metadata.gallery)
+      ? metadata.gallery.filter((image) => typeof image === 'string' && image.trim()).map(resolveSiteAsset)
+      : [],
     featured: metadata.featured === true,
     body: match[2].trim(),
     detailPath: `/news/${slug}`,
