@@ -21,6 +21,12 @@ const navigation = [
   { label: 'CONTACT', href: '/contact', path: '/contact' },
 ]
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
+
+function siteHref(path) {
+  return path === '/' ? (basePath ? `${basePath}/` : '/') : `${basePath}${path}`
+}
+
 function Header({ currentPath, onNavigate }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const closeMenu = () => setMenuOpen(false)
@@ -28,7 +34,7 @@ function Header({ currentPath, onNavigate }) {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <a className="site-brand" href="/" onClick={(event) => { event.preventDefault(); closeMenu(); onNavigate('/') }}>
+        <a className="site-brand" href={siteHref('/')} onClick={(event) => { event.preventDefault(); closeMenu(); onNavigate('/') }}>
           <img className="university-logo" src={cnuSymbol} alt="Chonnam National University symbol" />
           <span className="brand-copy">
             <strong>Food Processing Laboratory</strong>
@@ -45,7 +51,7 @@ function Header({ currentPath, onNavigate }) {
             <div className={`navigation-item${item.children ? ' has-submenu' : ''}`} key={item.label}>
               <a
                 className={item.path === currentPath || item.activePrefix && currentPath.startsWith(item.activePrefix) ? 'is-active' : ''}
-                href={item.href}
+                href={siteHref(item.href)}
                 onClick={(event) => {
                   closeMenu()
                   if (item.path) {
@@ -59,7 +65,7 @@ function Header({ currentPath, onNavigate }) {
               {item.children && (
                 <div className="navigation-submenu" aria-label="People sections">
                   {item.children.map((child) => (
-                    <a href={child.href} key={child.label} onClick={(event) => { event.preventDefault(); closeMenu(); onNavigate(child.path) }}>{child.label}</a>
+                    <a href={siteHref(child.href)} key={child.label} onClick={(event) => { event.preventDefault(); closeMenu(); onNavigate(child.path) }}>{child.label}</a>
                   ))}
                 </div>
               )}

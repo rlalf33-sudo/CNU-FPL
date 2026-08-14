@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "publications": "py -3 scripts/generate_publications.py",
+    "publications": "node scripts/run_publications.mjs",
     "prebuild": "npm run publications",
     "build": "vite build",
     "preview": "vite preview"

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CNU-FPL</title>
+    <script>
+      (function () {
+        var base = '/CNU-FPL/'
+        var destination = window.location.pathname + window.location.search + window.location.hash
+
+        try {
+          window.sessionStorage.setItem('cnu-fpl-redirect', destination)
+        } catch (error) {
+          // Continue to the homepage if session storage is unavailable.
+        }
+
+        window.location.replace(base)
+      }())
+    </script>
+  </head>
+  <body></body>
+</html>
