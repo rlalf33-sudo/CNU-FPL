@@ -1,54 +1,19 @@
-export const capabilities = [
+export const laboratorySpaces = [
   {
-    title: 'Food Processing & Product Development',
-    description: 'Processing-focused approaches for the study and development of food materials and products.',
-    methods: [],
-    relatedInstruments: [],
+    name: 'Student Workspace',
+    room: 'Room 426',
     image: null,
   },
   {
-    title: 'Rheology & Texture Analysis',
-    description: 'Characterization of flow, deformation, and texture-related properties in food materials.',
-    methods: [],
-    relatedInstruments: [],
-    image: null,
-  },
-  {
-    title: 'Hyperspectral Imaging & Machine Learning',
-    description: 'Imaging and data-analysis approaches for examining food materials and quality attributes.',
-    methods: [],
-    relatedInstruments: [],
-    image: null,
-  },
-  {
-    title: 'Food Structure & Quality Characterization',
-    description: 'Analytical evaluation of food structure and measurable characteristics associated with quality.',
-    methods: [],
-    relatedInstruments: [],
-    image: null,
-  },
-  {
-    title: 'Thermal & Physicochemical Analysis',
-    description: 'Study of thermal behavior and physicochemical properties relevant to food processing and materials.',
-    methods: [],
-    relatedInstruments: [],
+    name: 'Laboratory',
+    room: 'Room 427',
     image: null,
   },
 ]
 
-export const instruments = []
+// Future equipment entries support: id, name, model, manufacturer, location, and image.
+export const equipment = []
 
-export const methods = [
-  { name: 'Rheological characterization', description: '' },
-  { name: 'Texture analysis', description: '' },
-  { name: 'Hyperspectral imaging', description: '' },
-  { name: 'Machine learning / deep learning', description: '' },
-  { name: 'Thermal analysis', description: '' },
-  { name: 'Color measurement', description: '' },
-  { name: 'Moisture and physicochemical analysis', description: '' },
-  { name: 'Food structure evaluation', description: '' },
-]
-
-const resources = { capabilities, instruments, methods }
+const resources = { laboratorySpaces, equipment }
 
 export default resources
