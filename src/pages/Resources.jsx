@@ -25,7 +25,7 @@ function SpaceCarousel({ space }) {
   const showNext = () => setCurrentIndex((index) => (index + 1) % images.length)
 
   const handlePointerDown = (event) => {
-    if (!hasMultipleImages) return
+    if (!hasMultipleImages || event.target.closest('.space-carousel-control')) return
     pointerStart.current = event.clientX
     event.currentTarget.setPointerCapture?.(event.pointerId)
   }
