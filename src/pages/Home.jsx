@@ -48,16 +48,17 @@ function Home({ onNavigate }) {
       <section className="home-news-preview" id="news" aria-labelledby="news-title">
         <div className="section-shell">
           <div className="home-news-heading">
-            <h2 id="news-title">Latest News</h2>
+            <h2 id="news-title">News</h2>
             <a href={siteHref('/news')}>View all news <span aria-hidden="true">→</span></a>
           </div>
           {latestNews.length > 0 ? (
-            <div className="home-news-grid">
-              {latestNews.map((item) => {
+            <div className={`home-news-grid is-count-${latestNews.length}`}>
+              {latestNews.map((item, index) => {
                 const itemHref = siteHref(item.detailPath)
 
                 return (
                   <article className="home-news-card" key={item.id}>
+                    <span className="home-news-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                     {item.image ? (
                       <img className="home-news-image" src={item.image} alt="" />
                     ) : (
@@ -67,7 +68,10 @@ function Home({ onNavigate }) {
                       </div>
                     )}
                     <div className="home-news-card-copy">
-                      {item.date && <time dateTime={item.date}>{formatDate(item.date)}</time>}
+                      <div className="home-news-meta">
+                        {item.date && <time dateTime={item.date}>{formatDate(item.date)}</time>}
+                        {item.category && <span>{item.category}</span>}
+                      </div>
                       <h3>{item.title}</h3>
                       {item.summary && <p>{item.summary}</p>}
                       <a href={itemHref} aria-label={`Read ${item.title}`} onClick={(event) => { event.preventDefault(); onNavigate(item.detailPath) }}><span aria-hidden="true">→</span></a>

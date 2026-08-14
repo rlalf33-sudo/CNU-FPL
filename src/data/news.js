@@ -139,7 +139,6 @@ function parseNewsFile(source, filePath) {
     gallery: Array.isArray(metadata.gallery)
       ? metadata.gallery.filter((image) => typeof image === 'string' && image.trim()).map(resolveSiteAsset)
       : [],
-    featured: metadata.featured === true,
     body: match[2].trim(),
     detailPath: `/news/${slug}`,
   }

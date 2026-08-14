@@ -18,7 +18,7 @@ content:
       field: false
     view:
       primary: title
-      fields: [date, category, featured]
+      fields: [date, category]
       sort: date
       order: desc
     fields:
@@ -62,10 +62,6 @@ content:
           multiple:
             max: 20
           unique: true
-      - name: featured
-        label: Featured
-        type: boolean
-        required: false
       - name: body
         label: Content
         type: rich-text
