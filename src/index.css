@@ -397,7 +397,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .navigation-item { display: block; align-self: auto; }
   .primary-navigation a { display: block; padding: 14px 0; border-bottom: 1px solid var(--color-border); font-size: .68rem; }
   .primary-navigation a::after { right: auto; bottom: -1px; width: 24px; }
-  .navigation-submenu { position: static; width: auto; visibility: visible; padding: 3px 0 8px 20px; background: transparent; border: 0; box-shadow: none; opacity: 1; transform: none; transition: none; }
+  .navigation-submenu { position: static; width: auto; display: none; visibility: hidden; padding: 0 0 0 20px; background: transparent; border: 0; box-shadow: none; opacity: 0; transform: none; transition: none; }
+  .navigation-item.is-submenu-open .navigation-submenu { display: block; visibility: visible; padding-block: 3px 8px; opacity: 1; }
   .navigation-submenu a { padding: 10px 0; color: var(--color-muted); border-bottom: 0; font-size: .68rem; font-weight: 500; }
   .navigation-submenu a:hover, .navigation-submenu a:focus-visible { background: transparent; }
   .hero-inner { grid-template-columns: 1fr; padding-top: 60px; }
