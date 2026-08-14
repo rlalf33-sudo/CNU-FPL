@@ -11,13 +11,8 @@ function EmptyState({ children }) {
   return <div className="empty-state"><span className="empty-state-mark" aria-hidden="true" /><p>{children}</p></div>
 }
 
-function getTimestamp(date) {
-  const timestamp = Date.parse(date)
-  return Number.isNaN(timestamp) ? 0 : timestamp
-}
-
 function formatDate(date) {
-  const timestamp = getTimestamp(date)
+  const timestamp = Date.parse(date)
 
   if (!timestamp) return date || ''
 
@@ -29,12 +24,8 @@ function formatDate(date) {
   }).format(new Date(timestamp))
 }
 
-function Home() {
-  const latestNews = news
-    .map((item, sourceIndex) => ({ item, sourceIndex }))
-    .sort((a, b) => getTimestamp(b.item.date) - getTimestamp(a.item.date) || a.sourceIndex - b.sourceIndex)
-    .slice(0, 4)
-    .map(({ item }) => item)
+function Home({ onNavigate }) {
+  const latestNews = news.slice(0, 4)
 
   return (
     <main id="top">
@@ -63,7 +54,7 @@ function Home() {
           {latestNews.length > 0 ? (
             <div className="home-news-grid">
               {latestNews.map((item) => {
-                const itemHref = item.externalUrl || item.detailUrl
+                const itemHref = siteHref(item.detailPath)
 
                 return (
                   <article className="home-news-card" key={item.id}>
@@ -79,7 +70,7 @@ function Home() {
                       {item.date && <time dateTime={item.date}>{formatDate(item.date)}</time>}
                       <h3>{item.title}</h3>
                       {item.summary && <p>{item.summary}</p>}
-                      {itemHref && <a href={itemHref} aria-label={`Read ${item.title}`}><span aria-hidden="true">→</span></a>}
+                      <a href={itemHref} aria-label={`Read ${item.title}`} onClick={(event) => { event.preventDefault(); onNavigate(item.detailPath) }}><span aria-hidden="true">→</span></a>
                     </div>
                   </article>
                 )

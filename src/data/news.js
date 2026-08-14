@@ -1,12 +1,96 @@
-/**
- * News fields:
- * id, title, date, category, summary, image,
- * externalUrl, detailUrl, featured
- *
- * Suggested categories:
- * PUBLICATION, CONFERENCE, SEMINAR, AWARD, LAB EVENT,
- * MEMBER, RESEARCH, GENERAL
- */
-const news = []
+const newsFiles = import.meta.glob('../content/news/*.md', {
+  eager: true,
+  import: 'default',
+  query: '?raw',
+})
+
+const requiredFields = ['title', 'date', 'category', 'summary']
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
+
+function parseScalar(value) {
+  const trimmed = value.trim()
+
+  if (trimmed === 'true') return true
+  if (trimmed === 'false') return false
+  if (trimmed === 'null' || trimmed === '~') return null
+
+  if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+    try {
+      return JSON.parse(trimmed)
+    } catch {
+      return trimmed.slice(1, -1)
+    }
+  }
+
+  if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
+    return trimmed.slice(1, -1).replace(/''/g, "'")
+  }
+
+  return trimmed
+}
+
+function parseNewsFile(source, filePath) {
+  const normalizedSource = source.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n')
+  const match = normalizedSource.match(/^---\n([\s\S]*?)\n---(?:\n|$)([\s\S]*)$/)
+
+  if (!match) {
+    throw new Error(`[News] ${filePath} must begin with YAML front matter enclosed by --- lines.`)
+  }
+
+  const metadata = {}
+
+  match[1].split('\n').forEach((line, index) => {
+    if (!line.trim() || line.trimStart().startsWith('#')) return
+
+    const separator = line.indexOf(':')
+    if (separator < 1) {
+      throw new Error(`[News] Invalid front matter in ${filePath} at line ${index + 2}.`)
+    }
+
+    metadata[line.slice(0, separator).trim()] = parseScalar(line.slice(separator + 1))
+  })
+
+  const missingFields = requiredFields.filter((field) => typeof metadata[field] !== 'string' || !metadata[field].trim())
+  if (missingFields.length > 0) {
+    throw new Error(`[News] ${filePath} is missing required field(s): ${missingFields.join(', ')}.`)
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(metadata.date) || Number.isNaN(Date.parse(`${metadata.date}T00:00:00Z`))) {
+    throw new Error(`[News] ${filePath} has an invalid date. Use YYYY-MM-DD.`)
+  }
+
+  const slug = filePath.split('/').pop().replace(/\.md$/i, '')
+
+  return {
+    id: slug,
+    slug,
+    title: metadata.title,
+    date: metadata.date,
+    category: metadata.category,
+    summary: metadata.summary,
+    image: metadata.image ? resolveSiteAsset(metadata.image) : '',
+    featured: metadata.featured === true,
+    body: match[2].trim(),
+    detailPath: `/news/${slug}`,
+  }
+}
+
+export function resolveSiteAsset(path) {
+  if (!path || /^(?:[a-z]+:)?\/\//i.test(path) || path.startsWith('data:')) return path || ''
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  return `${basePath}${normalizedPath}`
+}
+
+function newsTimestamp(date) {
+  return Date.parse(`${date}T00:00:00Z`)
+}
+
+const news = Object.entries(newsFiles)
+  .map(([filePath, source]) => parseNewsFile(source, filePath))
+  .sort((a, b) => newsTimestamp(b.date) - newsTimestamp(a.date) || a.slug.localeCompare(b.slug))
+
+export function getNewsBySlug(slug) {
+  return news.find((item) => item.slug === slug)
+}
 
 export default news

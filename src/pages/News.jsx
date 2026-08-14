@@ -1,13 +1,8 @@
 import PageHeader from '../components/PageHeader.jsx'
 import news from '../data/news.js'
 
-function getTimestamp(date) {
-  const timestamp = Date.parse(date)
-  return Number.isNaN(timestamp) ? 0 : timestamp
-}
-
 function formatDate(date) {
-  const timestamp = getTimestamp(date)
+  const timestamp = Date.parse(date)
 
   if (!timestamp) return date || ''
 
@@ -32,15 +27,12 @@ function NewsImage({ item, featured = false }) {
   )
 }
 
-function NewsLink({ item, children }) {
-  const href = item.externalUrl || item.detailUrl
-
-  if (!href) return null
-
-  return <a href={href}>{children} <span aria-hidden="true">→</span></a>
+function NewsLink({ item, onNavigate, children }) {
+  const href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}${item.detailPath}`
+  return <a href={href} onClick={(event) => { event.preventDefault(); onNavigate(item.detailPath) }}>{children} <span aria-hidden="true">→</span></a>
 }
 
-function FeaturedNews({ item }) {
+function FeaturedNews({ item, onNavigate }) {
   return (
     <section className="featured-news" aria-labelledby="featured-news-title">
       <div className="section-shell featured-news-inner">
@@ -50,14 +42,14 @@ function FeaturedNews({ item }) {
           {item.date && <time dateTime={item.date}>{formatDate(item.date)}</time>}
           <h2 id="featured-news-title">{item.title}</h2>
           {item.summary && <p className="featured-news-summary">{item.summary}</p>}
-          <NewsLink item={item}>Read more</NewsLink>
+          <NewsLink item={item} onNavigate={onNavigate}>Read more</NewsLink>
         </div>
       </div>
     </section>
   )
 }
 
-function NewsCard({ item }) {
+function NewsCard({ item, onNavigate }) {
   return (
     <article className="news-card">
       <NewsImage item={item} />
@@ -68,26 +60,21 @@ function NewsCard({ item }) {
         </div>
         <h3>{item.title}</h3>
         {item.summary && <p>{item.summary}</p>}
-        <NewsLink item={item}>Read more</NewsLink>
+        <NewsLink item={item} onNavigate={onNavigate}>Read more</NewsLink>
       </div>
     </article>
   )
 }
 
-function News() {
-  const sortedNews = news
-    .map((item, sourceIndex) => ({ item, sourceIndex }))
-    .sort((a, b) => getTimestamp(b.item.date) - getTimestamp(a.item.date) || a.sourceIndex - b.sourceIndex)
-    .map(({ item }) => item)
-
-  const featuredItem = sortedNews.find((item) => item.featured)
-  const listItems = featuredItem ? sortedNews.filter((item) => item.id !== featuredItem.id) : sortedNews
+function News({ onNavigate }) {
+  const featuredItem = news.find((item) => item.featured)
+  const listItems = featuredItem ? news.filter((item) => item.id !== featuredItem.id) : news
 
   return (
     <main className="news-page" id="top">
       <PageHeader title="News" />
 
-      {featuredItem && <FeaturedNews item={featuredItem} />}
+      {featuredItem && <FeaturedNews item={featuredItem} onNavigate={onNavigate} />}
 
       <section className="news-list-section" aria-labelledby="news-list-title">
         <div className="section-shell">
@@ -97,7 +84,7 @@ function News() {
           </div>
 
           {listItems.length > 0 ? (
-            <div className="news-grid">{listItems.map((item) => <NewsCard key={item.id} item={item} />)}</div>
+            <div className="news-grid">{listItems.map((item) => <NewsCard key={item.id} item={item} onNavigate={onNavigate} />)}</div>
           ) : (
             <div className="news-empty-state">
               <span className="news-empty-mark" aria-hidden="true" />
