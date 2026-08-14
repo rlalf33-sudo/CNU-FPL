@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import ImageLightbox from '../components/ImageLightbox.jsx'
 import MarkdownContent from '../components/MarkdownContent.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 
@@ -15,6 +17,8 @@ function contentLanguage(item) {
 }
 
 function NewsDetail({ item, onNavigate }) {
+  const [lightboxIndex, setLightboxIndex] = useState(null)
+
   return (
     <main className="news-detail-page" id="top">
       <PageHeader title="News" />
@@ -33,14 +37,17 @@ function NewsDetail({ item, onNavigate }) {
             <h2 id="news-gallery-title">Gallery</h2>
             <div className="news-gallery">
               {item.gallery.map((image, index) => (
-                <a href={image} target="_blank" rel="noopener noreferrer" key={`${image}-${index}`}>
+                <button type="button" aria-label={`Open gallery image ${index + 1}`} onClick={() => setLightboxIndex(index)} key={`${image}-${index}`}>
                   <img src={image} alt={`News gallery image ${index + 1}`} />
-                </a>
+                </button>
               ))}
             </div>
           </section>
         )}
       </article>
+      {lightboxIndex !== null && (
+        <ImageLightbox images={item.gallery} initialIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+      )}
     </main>
   )
 }
