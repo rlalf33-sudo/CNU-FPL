@@ -63,14 +63,16 @@ function Home({ onNavigate }) {
                 return (
                   <article className="home-news-card" lang={contentLanguage(item)} key={item.id}>
                     <span className="home-news-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                    {item.image ? (
-                      <img className="home-news-image" src={item.image} alt="" />
-                    ) : (
-                      <div className="home-news-image-placeholder" aria-label="News image placeholder">
-                        <span aria-hidden="true" />
-                        <p>Image placeholder</p>
-                      </div>
-                    )}
+                    <a className="home-news-image-link" href={itemHref} aria-label={`Read ${item.title}`} onClick={(event) => { event.preventDefault(); onNavigate(item.detailPath) }}>
+                      {item.image ? (
+                        <img className="home-news-image" src={item.image} alt="" />
+                      ) : (
+                        <div className="home-news-image-placeholder" aria-label="News image placeholder">
+                          <span aria-hidden="true" />
+                          <p>Image placeholder</p>
+                        </div>
+                      )}
+                    </a>
                     <div className="home-news-card-copy">
                       <div className="home-news-meta">
                         {item.date && <time dateTime={item.date}>{formatDate(item.date)}</time>}
@@ -78,7 +80,6 @@ function Home({ onNavigate }) {
                       </div>
                       <h3>{item.title}</h3>
                       {item.summary && <p>{item.summary}</p>}
-                      <a href={itemHref} aria-label={`Read ${item.title}`} onClick={(event) => { event.preventDefault(); onNavigate(item.detailPath) }}><span aria-hidden="true">→</span></a>
                     </div>
                   </article>
                 )

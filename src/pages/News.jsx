@@ -18,28 +18,27 @@ function contentLanguage(item) {
   return /[가-힣]/.test(`${item.title} ${item.summary || ''}`) ? 'ko' : undefined
 }
 
-function NewsImage({ item }) {
-  if (item.image) {
-    return <img className="news-image" src={item.image} alt="" />
-  }
+function NewsImageLink({ item, onNavigate }) {
+  const href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}${item.detailPath}`
 
   return (
-    <div className="news-image-placeholder" aria-label="News image placeholder">
-      <span aria-hidden="true" />
-      <p>Image placeholder</p>
-    </div>
+    <a className="news-image-link" href={href} aria-label={`Read ${item.title}`} onClick={(event) => { event.preventDefault(); onNavigate(item.detailPath) }}>
+      {item.image ? (
+        <img className="news-image" src={item.image} alt="" />
+      ) : (
+        <div className="news-image-placeholder" aria-label="News image placeholder">
+          <span aria-hidden="true" />
+          <p>Image placeholder</p>
+        </div>
+      )}
+    </a>
   )
-}
-
-function NewsLink({ item, onNavigate, children }) {
-  const href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}${item.detailPath}`
-  return <a href={href} onClick={(event) => { event.preventDefault(); onNavigate(item.detailPath) }}>{children} <span aria-hidden="true">→</span></a>
 }
 
 function NewsCard({ item, onNavigate }) {
   return (
     <article className="news-card" lang={contentLanguage(item)}>
-      <NewsImage item={item} />
+      <NewsImageLink item={item} onNavigate={onNavigate} />
       <div className="news-card-copy">
         <div className="news-card-meta">
           {item.category && <span>{item.category}</span>}
@@ -47,7 +46,6 @@ function NewsCard({ item, onNavigate }) {
         </div>
         <h3>{item.title}</h3>
         {item.summary && <p>{item.summary}</p>}
-        <NewsLink item={item} onNavigate={onNavigate}>Read more</NewsLink>
       </div>
     </article>
   )
