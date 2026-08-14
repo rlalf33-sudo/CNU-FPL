@@ -30,6 +30,43 @@ function parseScalar(value) {
   return trimmed
 }
 
+function parseBlockScalar(lines, startIndex, indicator) {
+  const style = indicator[0]
+  const chomping = indicator[1] || ''
+  const blockLines = []
+  let index = startIndex
+
+  while (index + 1 < lines.length) {
+    const nextLine = lines[index + 1]
+    if (nextLine && !/^\s/.test(nextLine)) break
+    index += 1
+    blockLines.push(nextLine)
+  }
+
+  const indentation = blockLines
+    .filter((line) => line.trim())
+    .reduce((smallest, line) => Math.min(smallest, line.match(/^\s*/)[0].length), Infinity)
+  const normalizedLines = blockLines.map((line) => line.trim() ? line.slice(Number.isFinite(indentation) ? indentation : 0) : '')
+
+  let value
+  if (style === '|') {
+    value = normalizedLines.join('\n')
+  } else {
+    value = normalizedLines.reduce((result, line, lineIndex) => {
+      if (lineIndex === 0) return line
+      const previousLine = normalizedLines[lineIndex - 1]
+      return `${result}${previousLine && line ? ' ' : '\n'}${line}`
+    }, '')
+  }
+
+  const withoutTrailingBreaks = value.replace(/\n+$/, '')
+  if (chomping === '-') value = withoutTrailingBreaks
+  else if (chomping === '+') value = `${value}\n`
+  else value = `${withoutTrailingBreaks}\n`
+
+  return { value, endIndex: index }
+}
+
 function parseFrontMatter(source, filePath) {
   const metadata = {}
   const lines = source.split('\n')
@@ -45,6 +82,14 @@ function parseFrontMatter(source, filePath) {
 
     const key = line.slice(0, separator).trim()
     const rawValue = line.slice(separator + 1)
+    const blockIndicator = rawValue.trim().match(/^[|>][+-]?$/)?.[0]
+
+    if (blockIndicator) {
+      const block = parseBlockScalar(lines, index, blockIndicator)
+      metadata[key] = block.value
+      index = block.endIndex
+      continue
+    }
 
     if (rawValue.trim()) {
       metadata[key] = parseScalar(rawValue)
