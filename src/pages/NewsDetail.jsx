@@ -10,11 +10,15 @@ function formatDate(date) {
   }).format(new Date(`${date}T00:00:00Z`))
 }
 
+function contentLanguage(item) {
+  return /[가-힣]/.test(`${item.title} ${item.summary || ''} ${item.body || ''}`) ? 'ko' : undefined
+}
+
 function NewsDetail({ item, onNavigate }) {
   return (
     <main className="news-detail-page" id="top">
       <PageHeader title="News" />
-      <article className="news-article section-shell">
+      <article className="news-article section-shell" lang={contentLanguage(item)}>
         <a className="news-back-link" href={`${import.meta.env.BASE_URL}news`} onClick={(event) => { event.preventDefault(); onNavigate('/news') }}>← All News</a>
         <div className="news-article-header">
           <p>{item.category}</p>

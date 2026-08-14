@@ -24,6 +24,10 @@ function formatDate(date) {
   }).format(new Date(timestamp))
 }
 
+function contentLanguage(item) {
+  return /[가-힣]/.test(`${item.title} ${item.summary || ''}`) ? 'ko' : undefined
+}
+
 function Home({ onNavigate }) {
   const latestNews = news.slice(0, 4)
 
@@ -57,7 +61,7 @@ function Home({ onNavigate }) {
                 const itemHref = siteHref(item.detailPath)
 
                 return (
-                  <article className="home-news-card" key={item.id}>
+                  <article className="home-news-card" lang={contentLanguage(item)} key={item.id}>
                     <span className="home-news-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                     {item.image ? (
                       <img className="home-news-image" src={item.image} alt="" />

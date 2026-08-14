@@ -14,6 +14,10 @@ function formatDate(date) {
   }).format(new Date(timestamp))
 }
 
+function contentLanguage(item) {
+  return /[가-힣]/.test(`${item.title} ${item.summary || ''}`) ? 'ko' : undefined
+}
+
 function NewsImage({ item }) {
   if (item.image) {
     return <img className="news-image" src={item.image} alt="" />
@@ -34,7 +38,7 @@ function NewsLink({ item, onNavigate, children }) {
 
 function NewsCard({ item, onNavigate }) {
   return (
-    <article className="news-card">
+    <article className="news-card" lang={contentLanguage(item)}>
       <NewsImage item={item} />
       <div className="news-card-copy">
         <div className="news-card-meta">
