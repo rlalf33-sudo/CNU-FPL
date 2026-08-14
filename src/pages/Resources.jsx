@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import PageHeader from '../components/PageHeader.jsx'
 import { equipment, laboratorySpaces } from '../data/resources.js'
 
@@ -14,15 +15,57 @@ function ResourceSectionHeading({ number, label, title, id, introduction }) {
   )
 }
 
-function SpaceImage({ space }) {
-  if (space.image) {
-    return <img className="laboratory-space-image" src={space.image} alt={space.name} />
+function SpaceCarousel({ space }) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const pointerStart = useRef(null)
+  const images = space.images || []
+  const hasMultipleImages = images.length > 1
+
+  const showPrevious = () => setCurrentIndex((index) => (index - 1 + images.length) % images.length)
+  const showNext = () => setCurrentIndex((index) => (index + 1) % images.length)
+
+  const handlePointerDown = (event) => {
+    if (!hasMultipleImages) return
+    pointerStart.current = event.clientX
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+
+  const handlePointerUp = (event) => {
+    if (pointerStart.current === null || !hasMultipleImages) return
+    const distance = event.clientX - pointerStart.current
+    pointerStart.current = null
+    if (Math.abs(distance) < 45) return
+    if (distance < 0) showNext()
+    else showPrevious()
   }
 
   return (
-    <div className="laboratory-space-placeholder" role="img" aria-label={`Image for ${space.name} forthcoming`}>
-      <span aria-hidden="true" />
-      <p>Image forthcoming</p>
+    <div
+      className="laboratory-space-carousel"
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => { pointerStart.current = null }}
+    >
+      {images.length > 0 ? (
+        <img
+          className="laboratory-space-image"
+          src={images[currentIndex]}
+          alt={`${space.name} ${currentIndex + 1} of ${images.length}`}
+          draggable="false"
+        />
+      ) : (
+        <div className="laboratory-space-placeholder" role="img" aria-label={`Image for ${space.name} forthcoming`}>
+          <span aria-hidden="true" />
+          <p>Image forthcoming</p>
+        </div>
+      )}
+      {hasMultipleImages && (
+        <>
+          <button className="space-carousel-control is-previous" type="button" aria-label={`Previous ${space.name} image`} onClick={showPrevious}>‹</button>
+          <button className="space-carousel-control is-next" type="button" aria-label={`Next ${space.name} image`} onClick={showNext}>›</button>
+          <p className="space-carousel-count" aria-live="polite">{currentIndex + 1} / {images.length}</p>
+        </>
+      )}
     </div>
   )
 }
@@ -35,7 +78,7 @@ function LaboratorySpacesSection() {
         <div className="laboratory-spaces-grid">
           {laboratorySpaces.map((space) => (
             <article className="laboratory-space" key={space.room}>
-              <SpaceImage space={space} />
+              <SpaceCarousel space={space} />
               <div className="laboratory-space-copy">
                 <h3>{space.name}</h3>
                 <p>{space.room}</p>
@@ -50,7 +93,11 @@ function LaboratorySpacesSection() {
 
 function EquipmentImage({ item }) {
   if (item.image) {
-    return <img className="equipment-image" src={item.image} alt={item.name} />
+    return (
+      <div className="equipment-image-frame">
+        <img className="equipment-image" src={item.image} alt={item.name} />
+      </div>
+    )
   }
 
   return (
@@ -87,7 +134,7 @@ function ResearchInfrastructureSection() {
           label="Research Infrastructure"
           title="Research Facilities & Equipment"
           id="research-infrastructure-title"
-          introduction="Verified information about the laboratory's research equipment will be added as it becomes available."
+          introduction="Selected research facilities and equipment in the laboratory."
         />
         {equipment.length > 0 ? (
           <div className="equipment-grid">
