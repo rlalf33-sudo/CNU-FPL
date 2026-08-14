@@ -27,8 +27,16 @@ function Footer() {
         </div>
         <div className="footer-column footer-contact">
           <p className="footer-heading">Contact</p>
-          <p>Contact information will be added when available.</p>
-          <div className="campus-illustration-placeholder" aria-label="Reserved area for a future campus illustration" />
+          <dl className="footer-contact-details">
+            <div>
+              <dt>Email</dt>
+              <dd><a href="mailto:sungmin@jnu.ac.kr">sungmin@jnu.ac.kr</a></dd>
+            </div>
+            <div>
+              <dt>Tel</dt>
+              <dd><a href="tel:+82616597216">+82-61-659-7216</a></dd>
+            </div>
+          </dl>
           <a className="back-to-top" href="#top">Back to top <span aria-hidden="true">↑</span></a>
         </div>
       </div>

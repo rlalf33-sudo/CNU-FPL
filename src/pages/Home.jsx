@@ -90,6 +90,7 @@ function Home({ onNavigate }) {
           )}
         </div>
       </section>
+
     </main>
   )
 }
