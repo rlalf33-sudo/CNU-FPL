@@ -1,11 +1,14 @@
 import PageHeader from '../components/PageHeader.jsx'
 import contact from '../data/contact.js'
+import campusMap from '../assets/contact/campus-map.png'
 
 function ContactValue({ label, value, type }) {
   let content = value
 
   if (value && type === 'email') content = <a href={`mailto:${value}`}>{value}</a>
-  if (value && type === 'phone') content = <a href={`tel:${value}`}>{value}</a>
+  if (Array.isArray(value)) {
+    content = <span className="contact-multiline">{value.map((line) => <span key={line}>{line}</span>)}</span>
+  }
 
   return (
     <div className="contact-detail-row">
@@ -22,11 +25,10 @@ function ContactLinks() {
     ['University Profile', contact.links.universityProfile],
   ].filter(([, url]) => url)
 
-  if (!contact.email && links.length === 0) return null
+  if (links.length === 0) return null
 
   return (
-    <div className="contact-links" aria-label="Contact and profile links">
-      {contact.email && <a href={`mailto:${contact.email}`}>Email <span aria-hidden="true">→</span></a>}
+    <div className="contact-links" aria-label="Profile links">
       {links.map(([label, url]) => <a href={url} key={label}>{label} <span aria-hidden="true">→</span></a>)}
     </div>
   )
@@ -34,31 +36,14 @@ function ContactLinks() {
 
 function MapPlaceholder() {
   return (
-    <div className="map-placeholder" aria-label="Map placeholder">
-      <span className="map-axis map-axis-horizontal" aria-hidden="true" />
-      <span className="map-axis map-axis-vertical" aria-hidden="true" />
-      <span className="map-marker" aria-hidden="true" />
-      <div>
-        <p>{contact.university}</p>
-        <span>{contact.campus || 'Campus information to be added'}</span>
-      </div>
-    </div>
-  )
-}
-
-function GuidanceItem({ number, title, value }) {
-  return (
-    <article className="guidance-item">
-      <span>{number}</span>
-      <h3>{title}</h3>
-      <p>{value || 'Guidance will be added when available.'}</p>
-    </article>
+    <a className="map-placeholder" href={contact.mapUrl} target="_blank" rel="noopener noreferrer" aria-label="View Chonnam National University Yeosu Campus on Naver Map">
+      <img className="campus-map-image" src={campusMap} alt="Map of Chonnam National University Yeosu Campus" />
+      <span className="map-action">View on Naver Map <span aria-hidden="true">→</span></span>
+    </a>
   )
 }
 
 function Contact() {
-  const guidance = contact.prospectiveStudents.guidance
-
   return (
     <main className="contact-page" id="top">
       <PageHeader title="Contact" />
@@ -73,22 +58,17 @@ function Contact() {
               <ContactValue label="Address" value={contact.address} />
               <ContactValue label="Professor" value={contact.professor} />
               <ContactValue label="Email" value={contact.email} type="email" />
-              <ContactValue label="Telephone" value={contact.phone} type="phone" />
             </dl>
             <ContactLinks />
           </div>
 
           <div className="location-panel">
             <div className="location-heading"><p>Location</p><h2>Campus Location</h2></div>
-            {contact.mapUrl ? (
-              <a className="map-link" href={contact.mapUrl}>View map <span aria-hidden="true">→</span></a>
-            ) : (
-              <MapPlaceholder />
-            )}
+            <MapPlaceholder />
             <dl className="location-details">
               <ContactValue label="Campus" value={contact.campus} />
               <ContactValue label="Building" value={contact.building} />
-              <ContactValue label="Room" value={contact.room} />
+              <ContactValue label="Rooms" value={contact.rooms} />
             </dl>
           </div>
         </div>
@@ -101,19 +81,6 @@ function Contact() {
             <div><span>Join the Laboratory</span><h2 id="prospective-title">Prospective Students</h2></div>
           </div>
           <p className="prospective-introduction">{contact.prospectiveStudents.introduction}</p>
-          <div className="guidance-grid">
-            <GuidanceItem number="01" title="Graduate Research Opportunities" value={guidance.graduateOpportunities} />
-            <GuidanceItem number="02" title="Undergraduate Research Opportunities" value={guidance.undergraduateOpportunities} />
-            <GuidanceItem number="03" title="Research Interests" value={guidance.researchInterests} />
-            <GuidanceItem number="04" title="Contact Documents" value={guidance.contactDocuments} />
-          </div>
-        </div>
-      </section>
-
-      <section className="collaboration-section" aria-labelledby="collaboration-title">
-        <div className="section-shell collaboration-inner">
-          <p>02</p>
-          <div><span>Academic Partnerships</span><h2 id="collaboration-title">Research Collaboration</h2><p>{contact.collaboration}</p></div>
         </div>
       </section>
     </main>
