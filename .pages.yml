@@ -59,7 +59,9 @@ content:
         required: false
         options:
           media: news_images
-          multiple: true
+          multiple:
+            max: 20
+          unique: true
       - name: featured
         label: Featured
         type: boolean
