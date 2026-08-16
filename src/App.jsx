@@ -11,6 +11,7 @@ import Professor from './pages/Professor.jsx'
 import Publications from './pages/Publications.jsx'
 import Research from './pages/Research.jsx'
 import Resources from './pages/Resources.jsx'
+import Activities from './pages/Activities.jsx'
 import { getNewsBySlug } from './data/news.js'
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
@@ -69,7 +70,7 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'auto' })
   }
 
-  const availablePaths = ['/', '/research', '/people/professor', '/people/current-members', '/people/alumni', '/publications', '/resources', '/news', '/contact']
+  const availablePaths = ['/', '/research', '/people/professor', '/people/current-members', '/people/alumni', '/publications', '/resources', '/activities', '/news', '/contact']
   const newsSlug = path.match(/^\/news\/([^/]+)\/?$/)?.[1]
   const newsItem = newsSlug ? getNewsBySlug(decodeURIComponent(newsSlug)) : null
   const resolvedPath = path === '/people' ? '/people/current-members' : availablePaths.includes(path) || newsItem ? path : '/'
@@ -83,6 +84,7 @@ function App() {
     '/people/alumni': <Alumni />,
     '/publications': <Publications />,
     '/resources': <Resources />,
+    '/activities': <Activities />,
     '/news': <News onNavigate={navigate} />,
     '/contact': <Contact />,
   }

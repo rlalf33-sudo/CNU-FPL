@@ -1,6 +1,6 @@
 const quickLinks = [
   ['Home', '#top'], ['Research', '#research'], ['People', '#people'],
-  ['Publications', '#publications'], ['Resources', '#resources'], ['News', '#news'], ['Contact', '#contact'],
+  ['Publications', '#publications'], ['Resources', '#resources'], ['Activities', '#activities'], ['News', '#news'], ['Contact', '#contact'],
 ]
 
 const researchAreas = [

@@ -17,6 +17,7 @@ const navigation = [
   },
   { label: 'PUBLICATIONS', href: '/publications', path: '/publications' },
   { label: 'RESOURCES', href: '/resources', path: '/resources' },
+  { label: 'ACTIVITIES', href: '/activities', path: '/activities' },
   { label: 'NEWS', href: '/news', path: '/news' },
   { label: 'CONTACT', href: '/contact', path: '/contact' },
 ]

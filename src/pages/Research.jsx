@@ -47,14 +47,9 @@ function Research() {
                   <h2 id={`${pillar.id}-title`}>{pillar.title}</h2>
                   <h3 className="research-detail-subtitle">{pillar.subtitle}</h3>
                   <p className="research-detail-description">{pillar.description}</p>
-                  <div className="research-subareas">
-                    {pillar.subAreas.map((subArea) => (
-                      <div className="research-subarea" key={subArea.title}>
-                        <h4>{subArea.title}</h4>
-                        <ul>{subArea.keywords.map((keyword) => <li key={keyword}>{keyword}</li>)}</ul>
-                      </div>
-                    ))}
-                  </div>
+                  <ul className="research-keywords">
+                    {pillar.keywords.map((keyword) => <li key={keyword}>{keyword}</li>)}
+                  </ul>
                 </div>
                 <ResearchImage pillar={pillar} number={number} />
               </div>
