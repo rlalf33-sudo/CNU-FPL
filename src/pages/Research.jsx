@@ -45,10 +45,15 @@ function Research() {
                 <div className="research-detail-copy">
                   <span className="research-detail-number" aria-hidden="true">{number}</span>
                   <h2 id={`${pillar.id}-title`}>{pillar.title}</h2>
-                  <p className="research-detail-description">{pillar.intro}</p>
-                  <div className="research-keywords">
-                    <p>Focus Areas</p>
-                    <ul>{pillar.focusAreas.map((area) => <li key={area}>{area}</li>)}</ul>
+                  <h3 className="research-detail-subtitle">{pillar.subtitle}</h3>
+                  <p className="research-detail-description">{pillar.description}</p>
+                  <div className="research-subareas">
+                    {pillar.subAreas.map((subArea) => (
+                      <div className="research-subarea" key={subArea.title}>
+                        <h4>{subArea.title}</h4>
+                        <ul>{subArea.keywords.map((keyword) => <li key={keyword}>{keyword}</li>)}</ul>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <ResearchImage pillar={pillar} number={number} />
@@ -57,6 +62,12 @@ function Research() {
           )
         })}
       </div>
+
+      <aside className="research-disclosure" aria-label="Image disclosure">
+        <div className="section-shell">
+          <p>Visual images on this page were generated using generative AI for illustrative purposes.</p>
+        </div>
+      </aside>
     </main>
   )
 }
