@@ -23,7 +23,7 @@ npm run build
 npm run publications
 
 ## 홈페이지
-https://rlalf33-sudo.github.io/CNU-FPL/?utm_source=chatgpt.com
+https://rlalf33-sudo.github.io/JNU-FPL/?utm_source=chatgpt.com
 
 ## 뉴스 사진 업로드
 https://app.pagescms.org/
