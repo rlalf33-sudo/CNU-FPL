@@ -1,6 +1,6 @@
-# CNU-FPL
+# JNU-FPL
 
-CNU-FPL is a laboratory homepage project maintained with VS Code, Codex, Git, and GitHub.
+JNU-FPL is a laboratory homepage project maintained with VS Code, Codex, Git, and GitHub.
 
 Commit changes before and after major modifications.
 
@@ -17,7 +17,7 @@ Commit changes before and after major modifications.
 ## News management
 
 1. Open [Pages CMS](https://app.pagescms.org/) and sign in with GitHub.
-2. Select the CNU-FPL repository and open **News**.
+2. Select the JNU-FPL repository and open **News**.
 3. Create or edit an article.
 4. Enter its title, date, category, summary, and content.
 5. Upload a featured image if desired, then set **Featured** as needed.

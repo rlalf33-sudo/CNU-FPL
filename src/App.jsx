@@ -15,7 +15,7 @@ import Activities from './pages/Activities.jsx'
 import { getNewsBySlug } from './data/news.js'
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
-const redirectStorageKey = 'cnu-fpl-redirect'
+const redirectStorageKey = 'jnu-fpl-redirect'
 
 function routeFromBrowserPath(pathname) {
   if (!basePath) return pathname
