@@ -188,9 +188,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .student-groups { padding-top: 50px; }
 .student-group + .student-group { margin-top: clamp(70px, 8vw, 115px); padding-top: clamp(55px, 6vw, 85px); border-top: 1px solid var(--color-border); }
 .student-group-heading { margin: 0 0 clamp(38px, 5vw, 62px); color: var(--color-navy); font-family: var(--font-serif); font-size: clamp(1.8rem, 2.8vw, 2.8rem); line-height: 1.15; letter-spacing: -.035em; }
-.student-profile-list { max-width: 960px; }
-.student-profile { display: grid; grid-template-columns: minmax(190px, 220px) minmax(0, 1fr); gap: clamp(40px, 5vw, 70px); align-items: start; padding: 0 0 45px; }
-.student-profile + .student-profile { padding-top: 45px; border-top: 1px solid var(--color-border); }
+.student-profile-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(42px, 4vw, 64px); }
+.student-profile { display: grid; grid-template-columns: minmax(140px, 34%) minmax(0, 1fr); gap: clamp(24px, 2.5vw, 38px); align-items: start; }
 .student-profile .member-portrait-image, .student-profile .member-portrait-placeholder { aspect-ratio: 3 / 4; object-position: center; }
 .student-profile-copy h3 { margin: 0; color: var(--color-navy); font-family: var(--font-serif); font-size: clamp(1.625rem, 2.2vw, 1.875rem); line-height: 1.15; }
 .student-position { margin: 11px 0 0; color: var(--color-cnu-green); font-size: .88rem; font-weight: 600; }
@@ -443,6 +442,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .activity-work-item:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid var(--color-border); }
   .professor-profile { grid-template-columns: minmax(240px, 290px) minmax(0, 1fr); gap: 50px; }
   .member-portrait-placeholder.is-prominent { min-height: 430px; }
+  .student-profile-list { grid-template-columns: 1fr; }
   .student-profile { grid-template-columns: minmax(170px, 190px) minmax(0, 1fr); gap: 38px; }
   .alumni-row { grid-template-columns: 1fr 1fr; }
   .publication-year-group { grid-template-columns: 120px minmax(0, 1fr); }
@@ -513,8 +513,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .member-portrait-placeholder.is-prominent { min-height: 0; }
   .professor-details { padding-block: 0; }
   .student-groups { padding-top: 30px; }
-  .student-profile { grid-template-columns: 1fr; gap: 28px; max-width: 360px; }
-  .student-profile .member-portrait-image, .student-profile .member-portrait-placeholder { width: min(100%, 230px); }
+  .student-profile { grid-template-columns: minmax(100px, 34%) minmax(0, 1fr); gap: 22px; max-width: 100%; }
   .people-empty-state { min-height: 170px; padding: 30px 24px; }
   .alumni-row { grid-template-columns: 1fr; gap: 8px; }
   .publications-content { padding-block: 32px 85px; }
